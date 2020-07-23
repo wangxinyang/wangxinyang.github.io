@@ -391,17 +391,20 @@ elasticsearch.hosts: [&quot;http://192.168.10.100:9200&quot;]</code></pre></li>
 <pre><code>cd /kibana/bin
 ./kibana</code></pre></li>
 </ol>
-<h1 id="Kibanaのインデックスを操作する"><a href="#Kibanaのインデックスを操作する" class="headerlink" title="Kibanaのインデックスを操作する"></a>Kibanaのインデックスを操作する</h1><pre><code>＃インデックスを新規
-PUT /ems 
-
-＃全てのインデックスを獲得
-GET /_cat/indices?v
-
-＃インデックスを削除
-DELETE /ems
-
-＃typeを設定して新規
-PUT /ems
+<h1 id="Kibanaのインデックスの基本操作"><a href="#Kibanaのインデックスの基本操作" class="headerlink" title="Kibanaのインデックスの基本操作"></a>Kibanaのインデックスの基本操作</h1><ul>
+<li>インデックスを新規</li>
+</ul>
+<pre><code>PUT /ems </code></pre><ul>
+<li>全てのインデックスを獲得</li>
+</ul>
+<pre><code>GET /_cat/indices?v</code></pre><ul>
+<li>インデックスを削除</li>
+</ul>
+<pre><code>DELETE /ems
+DELETE /*  #全部を削除する</code></pre><ul>
+<li>typeを設定して新規</li>
+</ul>
+<pre><code>PUT /ems
 {
   &quot;mappings&quot;: {
     &quot;emp&quot;: {
@@ -413,10 +416,10 @@ PUT /ems
       }
     }
   }
-}
-
-#dangdang id name price author des pubdate
-PUT /dangdang
+}</code></pre><ul>
+<li>dangdang id name price author des pubdate</li>
+</ul>
+<pre><code>PUT /dangdang
 {
   &quot;mappings&quot;: {
     &quot;book&quot;: {
@@ -442,10 +445,110 @@ PUT /dangdang
       }
     }
   }
-}
+}</code></pre><ul>
+<li>query index</li>
+</ul>
+<pre><code>GET /dangdang
+GET /dangdang/_mapping</code></pre><ul>
+<li>ドキュメントを新規</li>
+</ul>
+<pre><code>PUT /ems/emp/1
+{
+  &quot;id&quot;: 1,
+  &quot;name&quot;: &quot;田中&quot;,
+  &quot;age&quot;: 23,
+  &quot;date&quot;: &quot;2020/12/11&quot;
+}</code></pre><ul>
+<li>ドキュメントを検索</li>
+</ul>
+<pre><code>GET /ems/emp/1</code></pre><ul>
+<li>ドキュメントを更新</li>
+</ul>
+<pre><code>POST /ems/emp/R3yYenMBt6TDWkHn1NM6/_update
+{
+  &quot;doc&quot;: {
+    &quot;name&quot;: &quot;原&quot;,
+    &quot;age&quot;: 44,
+    &quot;desc&quot;: &quot;新規のカラム&quot;
+  }
+}</code></pre><ul>
+<li>batch更新(_bulk) 新規(index)　修正(update)　削除(delete)</li>
+</ul>
+<pre><code>POST /ems/emp/_bulk
+{&quot;index&quot;: {}}
+  {&quot;name&quot;: &quot;大島&quot;, &quot;age&quot;: 34, &quot;desc&quot;: &quot;いい人です&quot;}
+{&quot;delete&quot;: {&quot;_id&quot;: 3}}
+{&quot;update&quot;: {&quot;_id&quot;: 2}}
+  {&quot;doc&quot;: {&quot;name&quot;: &quot;test&quot;} }</code></pre><h1 id="Kibanaのインデックスの高級検索"><a href="#Kibanaのインデックスの高級検索" class="headerlink" title="Kibanaのインデックスの高級検索"></a>Kibanaのインデックスの高級検索</h1><ul>
+<li>全部のドキュメントを検索してソートする（QueryString）</li>
+</ul>
+<pre><code>GET /ems/emp/_search?q=*&amp;sort=age
 
-#query index
-GET /dangdang/_mapping</code></pre>
+＃ ageを降順する
+GET /ems/emp/_search?q=*&amp;sort=age:desc
+
+# pagination from size
+# _source 検索したいカラム
+GET /ems/emp/_search?q=*&amp;sort=age&amp;size=2&amp;from=0&amp;_source=name</code></pre><ul>
+<li>全部のドキュメントを検索してソートする（QueryDSL）</li>
+</ul>
+<pre><code># 全部を検索する
+GET /ems/emp/_search
+{
+  &quot;query&quot;: {
+    &quot;match_all&quot;: {}
+  }
+}</code></pre><ul>
+<li>ソーティング</li>
+</ul>
+<pre><code>GET /ems/emp/_search
+{
+  &quot;query&quot;: {
+    &quot;match_all&quot;: {}
+  },
+  &quot;sort&quot;: [
+    {
+      &quot;age&quot;: {
+        &quot;order&quot;: &quot;desc&quot;
+      }
+    },
+    {
+      &quot;bir&quot;: {
+        &quot;order&quot;: &quot;desc&quot;
+      }
+    }
+  ]
+}</code></pre><ul>
+<li>pagination _source</li>
+</ul>
+<pre><code>GET /ems/emp/_search
+{
+  &quot;query&quot;: {
+    &quot;match_all&quot;: {}
+  },
+  &quot;from&quot;: 0,
+  &quot;size&quot;: 2, 
+  &quot;sort&quot;: [
+    {
+      &quot;age&quot;: {
+        &quot;order&quot;: &quot;desc&quot;
+      }
+    }
+  ],
+  &quot;_source&quot;: [&quot;name&quot;, &quot;age&quot;]
+}</code></pre><ul>
+<li>term検索</li>
+</ul>
+<pre><code>GET /ems/emp/_search
+{
+  &quot;query&quot;: {
+    &quot;term&quot;: {
+      &quot;name&quot;: {
+        &quot;value&quot;: &quot;test&quot;
+      }
+    }
+  }
+}</code></pre>
             </div>
             <hr/>
 
