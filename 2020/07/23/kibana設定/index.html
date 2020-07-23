@@ -391,7 +391,61 @@ elasticsearch.hosts: [&quot;http://192.168.10.100:9200&quot;]</code></pre></li>
 <pre><code>cd /kibana/bin
 ./kibana</code></pre></li>
 </ol>
+<h1 id="Kibanaのインデックスを操作する"><a href="#Kibanaのインデックスを操作する" class="headerlink" title="Kibanaのインデックスを操作する"></a>Kibanaのインデックスを操作する</h1><pre><code>＃インデックスを新規
+PUT /ems 
 
+＃全てのインデックスを獲得
+GET /_cat/indices?v
+
+＃インデックスを削除
+DELETE /ems
+
+＃typeを設定して新規
+PUT /ems
+{
+  &quot;mappings&quot;: {
+    &quot;emp&quot;: {
+      &quot;properties&quot;: {
+        &quot;id&quot;: {&quot;type&quot;: &quot;keyword&quot;},
+        &quot;name&quot;: {&quot;type&quot;: &quot;text&quot;},
+        &quot;age&quot;: {&quot;type&quot;: &quot;integer&quot;},
+        &quot;bir&quot;: {&quot;type&quot;: &quot;date&quot;}
+      }
+    }
+  }
+}
+
+#dangdang id name price author des pubdate
+PUT /dangdang
+{
+  &quot;mappings&quot;: {
+    &quot;book&quot;: {
+      &quot;properties&quot;: {
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;keyword&quot;
+        },
+        &quot;name&quot;: {
+          &quot;type&quot;: &quot;keyword&quot;
+        },
+        &quot;price&quot;: {
+          &quot;type&quot;: &quot;double&quot;
+        },
+        &quot;author&quot;: {
+          &quot;type&quot;: &quot;keyword&quot;
+        },
+        &quot;des&quot;: {
+          &quot;type&quot;: &quot;text&quot;
+        },
+        &quot;pubdate&quot;: {
+          &quot;type&quot;: &quot;date&quot;
+        }
+      }
+    }
+  }
+}
+
+#query index
+GET /dangdang/_mapping</code></pre>
             </div>
             <hr/>
 
