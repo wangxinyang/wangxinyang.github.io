@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Tags, Tosei&#39;sブログ">
+    <meta name="keywords" content="Tags, フルスタック">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -223,7 +223,7 @@
         <div class="brand">
             <div class="title center-align">
                 
-                    subtitle
+                サイト構築とソフト開発
                 
             </div>
 
@@ -270,10 +270,43 @@
             </div>
             <div class="tag-chips">
                 
+                
+                <a href="/tags/ElasticSearch/" title="ElasticSearch: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="ElasticSearch" style="background-color: #F9EBEA;">ElasticSearch
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
             </div>
         </div>
     </div>
 </div>
+
+    
+    <link rel="stylesheet" type="text/css" href="/libs/jqcloud/jqcloud.css">
+<style type="text/css">
+    #tag-wordcloud {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<div class="container" data-aos="fade-up">
+    <div class="card">
+        <div id="tag-wordcloud" class="card-content"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/libs/jqcloud/jqcloud-1.0.4.min.js"></script>
+<script type="text/javascript">
+    
+
+    $('#tag-wordcloud').jQCloud([{"text":"ElasticSearch","weight":1,"link":"/tags/ElasticSearch/"}], {
+        autoResize: true
+    });
+</script>
 
     
 
